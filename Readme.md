@@ -2,6 +2,14 @@
   <a href="https://android-arsenal.com/api?level=24"><img alt="API" src="https://img.shields.io/badge/API-24%2B-brightgreen.svg?style=flat"/></a>
 </p>
 
+# Ui Showcase
+
+<p align="center">
+<img src="https://user-images.githubusercontent.com/6996260/188384967-a6f66cd1-f8f8-45ec-a614-d49cfd7517e5.png" width="300" height="700" />
+<img src="https://user-images.githubusercontent.com/6996260/188384953-920a9016-1af9-48cb-a519-917d35de0c9d.png" width="300" height="700" />
+<img src="https://user-images.githubusercontent.com/6996260/188384980-8e0e4678-4bb7-4e7b-8a37-2643fdbbd422.png" width="300" height="700" />
+<p>
+
 # Architecture description
 
 The chosen architecture to build this project was "Clean architecture" . Why ?
@@ -13,7 +21,7 @@ test this layers in isolation in a way that doesn't really affect each others.
 
 - **Domain**: the domain layer, contains our business logic, defining 
   repositories, entities and use cases that can be also called interactors as well.
-  Finally this layer shouldn't have any dependency on any other layers or third part libraries.
+  Finally this layer shouldn't have any other dependencies on any other layers.
 
 - **Data**: the data layer will implement what is already defined in the domain such as repositories.
 and here you can have multiple data source implementation like caching in local database or getting data remotely from
@@ -34,7 +42,7 @@ Exhaustive list of libraries helped me to achieve this project.
 
 ### Network
 Retrofit was an obvious choice for the simplicity that it can offer to perform API calls. in addition 
-the API call has no custom requirements in terms of caching, request prioritization and retries.
+the API call has no custom requirements in terms of caching, request prioritization or retries.
 
 ### Network response deserialization
  [Moshi](https://github.com/square/moshi) was introduced as a small, efficient and safer alternative to Gson. Using moshi codegen will create compile time
@@ -43,7 +51,7 @@ the API call has no custom requirements in terms of caching, request prioritizat
 
 ### Dependency injection with Hilt
 I used [Hilt](https://developer.android.com/training/dependency-injection/hilt-android) library backed by Google, It was built on top of ```Dagger``` and inherit many benefits like 
-runtime performance, compile time validation and faster build. Hilt provides a standardized way to manage dependency injection in particular Android with scoping component, extension for viewModels and tooling support.
+runtime performance, compile time validation and faster build. Hilt provides a standardized way to manage dependency injection in particular for ***Android*** with scoping component, extension for viewModels and tooling support.
 
 
 ### Display Images
@@ -56,7 +64,6 @@ Data persistence was done with the help of [Room](https://developer.android.com/
 Kotlin coroutines are used to perform asynchronous tasks. They are described as "light-weight threads" and added to Kotlin in version ```1.3```.
 It helps to manage long-running tasks using suspend functions and offer the possibility to run these tasks on different optimized threads.
 
-Coroutines work perfectly with Flows which are used to handle streams of data.
 
 # Technical choices
 
@@ -71,7 +78,7 @@ providing multiple data sources (remote or local)
 
 ### MVVM
 
-As mentioned earlier, the presentation layer using MVVM design pattern, the ```ViewModel``` is aware of the Android lifecycle supporting Coroutines, LiveData and Flows.
+As mentioned earlier, the presentation layer using MVVM design pattern, the ```ViewModel``` is aware of the Android lifecycle and suppor ***Coroutines***, ***LiveData*** and ***Flows***.
 the most important that views and viewModels are not tightly coupled compared to other architectures like MVP for example.
 
 ### Loading data progressively
@@ -81,7 +88,11 @@ it was not clean architecture compatible in my opinion. Why ?
 
 I didn't find a proper way to map ```PagingSource<Int, Album>``` type coming from ```AlbumDao``` to ```Album``` domain model. I found an [issue](https://issuetracker.google.com/issues/206697857) describing my point of view. Once released I'll be happy to test it.
 
-In the meantime I used classic infinite scroll to solve this issue.
+In the meantime I used classic infinite scroll to solve this issue and paging albums data.
+
+### Handle configuration changes and scroll position
+
+I used RecyclerView.Adapter ```StateRestorationPolicy``` mechanisme which has been introduced with ```1.2.0``` version. this new API could save scroll position. The ```ViewModel``` class is designed to store and manage UI-related data in a lifecycle conscious way and allows data to survive configuration changes such as screen rotations or death process.
 
 # Testing
 
